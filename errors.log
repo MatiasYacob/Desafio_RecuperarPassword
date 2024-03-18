@@ -1,0 +1,8 @@
+[31mwarn[39m: GET en /users/login - at 10/3/2024 - 03:39:06
+[31mwarn[39m: GET en /public/login.js - at 10/3/2024 - 03:39:06
+warn: GET en / - at 10/3/2024 - 03:42:41
+warn: GET en /favicon.ico - at 10/3/2024 - 03:42:41
+warn: GET en /users/register - at 10/3/2024 - 03:42:58
+warn: GET en /public/register.js - at 10/3/2024 - 03:42:59
+warn: GET en /users/register - at 10/3/2024 - 03:47:58
+warn: GET en /public/register.js - at 10/3/2024 - 03:47:58

@@ -1,0 +1,64 @@
+
+<div>
+    <h1>Carga de Productos</h1>
+   <form class="container mt-4">
+    <div class="form-group">
+        <label for="title">Título:</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descripción:</label>
+        <textarea class="form-control" id="description" name="description" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="price">Precio:</label>
+        <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+        <label for="thumbnails">URL de la Imagen:</label>
+        <input type="text" class="form-control" id="thumbnails" name="thumbnails" required>
+    </div>
+
+    <div class="form-group">
+        <label for="code">Código:</label>
+        <input type="text" class="form-control" id="code" name="code" required>
+    </div>
+
+    <div class="form-group">
+        <label for="stock">Cantidad en Stock:</label>
+        <input type="number" class="form-control" id="stock" name="stock" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+<h2>Productos</h2>
+
+  <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <p> <a href="/cart" class="btn btn-primary ml-3">Ir al Carrito</a></p>
+            <p> <a href="/chat" class="btn btn-primary ml-3 ">Ir al Chat</a></p>
+
+            <p> <a href="/products" class="btn btn-primary ml-3">Ir a Products</a></p>
+
+
+
+        </ul>
+
+
+
+    </nav>
+    <div class="container">
+    <div id="products" class="row row-cols-1 row-cols-md-4 g-4"></div>
+</div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../public/main.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</div>

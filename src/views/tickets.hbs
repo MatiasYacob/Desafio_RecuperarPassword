@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Tickets</title>
+</head>
+<body>
+    <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/realtimeproducts">Ir a Carga de productos</a>
+    </li>
+   
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/chat">Ir al Chat</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/cart">Ir al carrito</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/products">Ir a Products</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/users/register">Regístrate</a>
+    </li>
+    <li class="page-item mt-3 ml-2">
+      <a class="btn btn-primary" href="/users/login">Inicia sesión</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Tus Tickets</h2>
+
+    {{#if tickets.length}}
+        {{#each tickets}}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><p><strong>Codigo de Compra:</strong> {{this.code}}</p> </h5>
+                    <p class="card-text">Fecha de compra: {{this.purchase_datetime}}</p>
+                    <p class="card-text">Monto: ${{this.amount}}</p>
+                    <!-- Otros campos del ticket que desees mostrar -->
+                </div>
+            </div>
+        {{/each}}
+    {{else}}
+        <p>No hay tickets disponibles.</p>
+    {{/if}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+

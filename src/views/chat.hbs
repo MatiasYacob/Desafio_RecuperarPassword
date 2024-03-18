@@ -1,0 +1,34 @@
+<div class="chat-container">
+    <div class="chat" id="chat-messages">
+      <p id="messages"></p>
+    </div>
+    <div class="chat">
+      <input type="text" id="chatbox" placeholder="Escribe un mensaje...">
+    </div>
+
+  <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <p> <a href="/realtimeproducts" class="btn btn-primary ml-3">Ir a Carga de productos</a></p>
+            <p> <a href="/cart" class="btn btn-primary ml-3 ">Ir al Carrito</a></p>
+
+            <p> <a href="/products" class="btn btn-primary ml-3">Ir a Products</a></p>
+
+
+
+        </ul>
+
+
+
+    </nav>
+
+
+
+
+
+
+  <!-- Agrega esto en la sección head de tu HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script  src="../public/main.js"></script>
+  <script>askForNameAndSendMessage(""); </script>
+</div>

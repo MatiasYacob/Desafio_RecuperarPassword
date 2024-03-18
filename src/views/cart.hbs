@@ -1,0 +1,272 @@
+<!-- views/cart.handlebars -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras</title>
+
+  <!-- Agrega los enlaces CDN a Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #343a40;
+    }
+
+    li {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .product-card {
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .product-info {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #495057;
+    }
+
+    .product-quantity {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #28a745;
+    }
+
+    .delete-btn {
+      cursor: pointer;
+    }
+
+    .checkout-btn {
+      margin-top: 20px;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .checkout-btn:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+      <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/realtimeproducts">Ir a Carga de productos</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/chat">Ir al Chat</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/cart">Ir al carrito</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/products">Ir a Products</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/users/register">Regístrate</a>
+    </li>
+    <li class="page-item mt-3 ml-2">
+      <a class="btn btn-primary" href="/users/login">Inicia sesión</a>
+    </li>
+  </ul>
+</nav>
+</div>
+  <div class="container">
+    <h1>Productos en el carrito</h1>
+    <ul class="list-unstyled">
+      {{#each productsInCart}}
+        <li class="border p-3 d-flex justify-content-between align-items-center product-card">
+          <div>
+            <div class="product-title">{{this.title}}</div>
+            <div class="product-info">
+              <strong>Nombre:</strong> {{this.name}}<br>
+              <strong>Precio:</strong> ${{this.price}}
+            </div>
+            <div class="product-quantity">
+              <strong>Cantidad:</strong> {{this.quantity}}
+            </div>
+          </div>
+          <button class="btn btn-danger delete-btn" onclick="deleteProduct('{{this.productId}}')">Eliminar</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    {{#if productsInCart.length}} <!-- Verifica si hay productos en el carrito -->
+        <button class="btn btn-primary btn-lg checkout-btn" onclick="confirmPurchase()">Realizar Compra</button>
+    {{else}}
+        <p>El carrito está vacío.</p>
+    {{/if}}
+  </div>
+
+<!-- ... Tu código HTML existente ... -->
+
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmar Compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro de realizar la compra? Se generará un ticket y se procesará la compra.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="checkout()">Sí, realizar compra</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
+
+  <!-- Agrega los scripts de Bootstrap y funciones personalizadas al final del body -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ... Tu código HTML existente ... -->
+
+<script>
+    // Función para eliminar un producto del carrito
+    async function deleteProduct(productId) {
+        try {
+            const response = await fetch(`api/carts/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error al eliminar el producto del carrito: ${response.status}`);
+            }
+            
+            if (response.ok) {
+                location.reload();
+            }
+
+            const data = await response.json();
+
+            // Puedes realizar otras acciones después de eliminar el producto
+
+            return data; // Puedes decidir si devolver algo específico desde el backend y manejarlo aquí
+
+        } catch (error) {
+            console.error('Error al eliminar el producto del carrito:', error);
+            // Manejar el error de alguna manera
+        }
+    }
+
+    // Función para mostrar el cuadro de diálogo de confirmación con SweetAlert2
+      function confirmPurchase() {
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        confirmationModal.show();
+    }
+
+    // Función para realizar la compra
+async function checkout() {
+    // Mostrar indicador de carga mientras se procesa la compra
+    Swal.showLoading();
+
+    try {
+        const response = await fetch(`api/carts/tickets/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text(); // Obtener el mensaje de error del cuerpo de la respuesta
+            throw new Error(`Error al finalizar la compra: ${errorMessage}`);
+        }
+
+        const data = await response.json();
+        console.log('Ticket Enviado:', data);
+
+        // Ocultar indicador de carga
+        Swal.hideLoading();
+
+        // Mostrar mensaje de confirmación con SweetAlert2
+        const result = await Swal.fire({
+            title: 'Compra realizada',
+            text: 'Se ha generado un ticket.',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Aceptar',
+        });
+
+        // Si el usuario confirma, puedes realizar acciones adicionales
+        if (result.isConfirmed) {
+            // Puedes redirigir a otra página, recargar la página actual, etc.
+            // En este ejemplo, simplemente recargamos la página para reflejar los cambios
+            location.reload();
+        }
+
+    } catch (error) {
+        console.error('Error al finalizar la Compra:', error);
+
+        // Ocultar indicador de carga en caso de error
+        Swal.hideLoading();
+
+        // Mostrar un mensaje de error al usuario con SweetAlert2
+        Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: obtenerMensajeError(error),
+    }).then((result) => {
+        // Después de hacer clic en el botón "Aceptar", recarga la página
+        if (result.isConfirmed) {
+            location.reload();
+        }
+    });
+    }
+}
+
+// Función para obtener un mensaje más descriptivo del error del servidor
+function obtenerMensajeError(error) {
+    if (error.message.includes('No hay suficiente stock') || error.message.includes('fuera de stock')) {
+        return 'No hay suficiente stock para completar la compra. Por favor, Consulta con tu vendedor.';
+    }
+
+    // Mostrar el mensaje de error específico del servidor
+    return `Error del servidor: ${error.message}`;
+}
+
+
+
+
+
+</script>
+
+<!-- ... Otro código HTML ... -->
+
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Web Page Title</title>
+
+    <!-- Include jQuery before Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
+    <!-- Include Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io@4"></script>
+
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- Your other head elements go here -->
+</head>
+<body>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {{#if responseObject.hasPrevPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{responseObject.prevLink}}">Anterior</a>
+                    </li>
+                {{/if}}
+                <li class="page-item">
+                    <button class="btn btn-primary ml-3" disabled>{{responseObject.currentPage}} of {{responseObject.totalPages}}</button>
+                </li>
+                {{#if responseObject.hasNextPage}}
+                    <li class="page-item">
+                        <a class="page-link" href="{{responseObject.nextLink}}">Siguiente</a>
+                    </li>
+                {{/if}}
+                <p class="btn btn-primary ml-3">
+                    Cantidad De Productos: {{responseObject.totalDocs}}
+                </p>
+                <p> <a href="/realtimeproducts" class="btn btn-primary ml-3">Ir a Carga de productos</a></p>
+                <p> <a href="/chat" class="btn btn-primary ml-3">Ir al Chat</a></p>
+                <p> <a href="/cart" class="btn btn-primary ml-3">Ir al carrito</a></p>
+                <p> <a href="/users" class="btn btn-primary ml-3">Perfil</a></p>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">ID Mongo</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each responseObject.payload}}
+                    <tr>
+                        <td>{{title}}</td>
+                        <td>{{description}}</td>
+                        <td>{{_id}}</td>
+                        <td><strong>$ {{price}}</strong></td>
+                        <td>{{code}}</td>
+                        <td>{{stock}}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="AddProductToCart('{{_id}}')">Add to Cart</button>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    async function AddProductToCart(productId) {
+    try {
+        console.log(productId);
+
+        const response = await fetch(`api/carts/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error al agregar el producto al carrito: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Producto agregado al carrito:', data);
+
+        // Show success toast using SweetAlert
+           await Swal.fire({
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            toast:true
+        });
+
+        // Realizar acciones adicionales si es necesario, por ejemplo, actualizar la interfaz de usuario
+
+    } catch (error) {
+        console.error('Error al agregar el producto al carrito:', error);
+
+        // Show error toast using SweetAlert
+        await Swal.fire({
+            title: 'Error al agregar el producto al carrito',
+            text: error.message || 'Ocurrió un error inesperado',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+        });
+
+        // Manejar el error de alguna manera, por ejemplo, mostrar un mensaje de error al usuario
+    }
+}
+
+</script>
+
+</body>
+</html>

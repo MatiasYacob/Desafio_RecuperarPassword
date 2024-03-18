@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <!-- Agrega el enlace a Bootstrap CDN -->
+<!-- Enlace a Bootstrap CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Enlaces a SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Otro contenido del head -->
+    <style>
+    body {
+        background-color: #f8f9fa; /* Color de fondo del cuerpo */
+    }
+
+    .container {
+        background-color: #ffffff; /* Color de fondo del contenedor */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        margin-top: 20px;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #007bff; /* Color de fondo del botón */
+        color: #ffffff; /* Color del texto del botón */
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3; /* Cambiar el color al pasar el ratón */
+    }
+
+    .row {
+        margin-top: 20px;
+    }
+
+    .card {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave en las tarjetas */
+    }
+</style>
+
+    
+<body>
+  
+ 
+
+    <div class="container mt-5">
+        <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/realtimeproducts">Ir a Carga de productos</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/chat">Ir al Chat</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/cart">Ir al carrito</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/products">Ir a Products</a>
+    </li>
+    <li class="page-item mt-3 mr-2 ml-2">
+      <a class="btn btn-primary" href="/users/register">Regístrate</a>
+    </li>
+    <li class="page-item mt-3 ml-2">
+      <a class="btn btn-primary" href="/users/login">Inicia sesión</a>
+    </li>
+  </ul>
+</nav>
+</form>
+
+        <h1 class="mb-4">Lista de Productos</h1>
+         <!-- Botones de paginación -->
+            <div class="mt-4">
+                 {{#if responseObject.hasPrevPage}}
+                    <a class="btn btn-primary" href="{{responseObject.prevLink}}">Anterior</a>
+                {{/if}}
+                    
+                    <button class="btn btn-secondary" disabled>{{responseObject.currentPage}} of {{responseObject.totalPages}}</button>
+                
+                {{#if responseObject.hasNextPage}}
+                    <a class="btn btn-primary" href="{{responseObject.nextLink}}">Siguiente</a>
+                {{/if}}
+               
+            </div>
+
+        {{#if responseObject.payload.length}}
+            <div class="row">
+                {{#each responseObject.payload}}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">{{title}}</h3>
+                                <p class="card-text">{{description}}</p>
+                                <p class="card-text">Precio: ${{price}}</p>
+                                <!-- Agrega más campos según tus necesidades -->
+
+                                <!-- Botón de borrar -->
+                                <button class="btn btn-danger" onclick="deleteProduct('{{_id}}')">Borrar</button>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+                <form id="productForm">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea>
+
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" required>
+
+    <label for="thumbnails">Thumbnails:</label>
+    <input type="text" id="thumbnails" name="thumbnails" required>
+
+    <label for="code">Code:</label>
+    <input type="text" id="code" name="code" required>
+
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock" required>
+
+    <button type="button" onclick="validateAndSubmit()">Agregar Producto</button>
+
+            </div>
+
+           
+
+        {{else}}
+            <p>No hay productos disponibles.</p>
+        {{/if}}
+    </div>
+
+    <!-- Agrega el script para manejar la acción de borrar (puedes personalizar según tu lógica) -->
+    <script>
+      //funcion para validar el
+
+      function validateAndSubmit() {
+        // Obtener valores de los campos
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const thumbnails = document.getElementById('thumbnails').value;
+        const code = document.getElementById('code').value;
+        const stock = document.getElementById('stock').value;
+
+        // Validar que todos los campos estén llenos
+        if (!title || !description || !price || !thumbnails || !code || !stock) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Por favor, complete todos los campos obligatorios.',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            return;
+        }
+
+        // Llamar a la función para enviar el formulario si todos los campos están llenos
+        submitForm();
+    }
+
+    
+      //Funcion para borrar producto
+    async function deleteProduct(productId) {
+        try {
+            // Hacer una solicitud DELETE al servidor
+            const response = await fetch(`/api/product/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Aquí podrías incluir el token JWT si es necesario para la autenticación
+                    // 'Authorization': 'Bearer ' + tuTokenJWT,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error al eliminar el producto: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if(data){location.reload();}
+
+            // Puedes realizar otras acciones aquí después de borrar el producto
+
+        } catch (error) {
+            console.error('Error al eliminar el producto de la BD:', error);
+            // Manejar el error de alguna manera
+        }
+    }
+
+
+   async function submitForm() {
+        try {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+
+            const response = await fetch('api/product/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error al agregar el producto: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if(data){
+              // Mostrar una alerta de éxito con SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Producto agregado exitosamente.',
+                html: `
+                <p>Información del producto:</p>
+                <ul>
+                    <li><strong>Título:</strong> ${formData.get('title')}</li>
+                    <li><strong>Descripción:</strong> ${formData.get('description')}</li>
+                    <li><strong>Precio:</strong> ${formData.get('price')}</li>
+                    <!-- Agrega más campos según tus necesidades -->
+                </ul>
+            `,
+                showConfirmButton: true,
+                
+            }).then(() => {
+                // Recargar la página después de que la alerta de éxito desaparezca
+                location.reload();
+            });
+            }
+            
+
+            // Puedes realizar otras acciones aquí después de agregar el producto
+
+        } catch (error) {
+            console.error('Error al agregar el producto:', error);
+
+            // Mostrar una alerta de error con SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al agregar el producto.',
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            // Manejar el error de alguna manera
+        }
+    }
+
+
+</script>
+
+    <!-- Agrega el enlace a Bootstrap JS (si es necesario) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
