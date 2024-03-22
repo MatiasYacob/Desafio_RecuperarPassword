@@ -37,26 +37,54 @@
             <p class="card-text"><strong>Nombre:</strong> {{user.name}}</p>
             <p class="card-text"><strong>Email:</strong> {{user.email}}</p>
             <p class="card-text"><strong>Edad:</strong> {{user.age}}</p>
-            <p class="card-text"><strong>Rol:</strong> {{user.role}}</p>
+            <p id="userRole" class="card-text"><strong>Rol:</strong> {{user.role}}</p>
+
         </div>
-         
-      <a class="btn btn-primary" href="/tickets">Ver Mis Tickets</a>
-   
+        <a class="btn btn-primary" href="/tickets">Ver Mis Tickets</a>
+        <!-- Botón para cambiar el rol del usuario -->
+        <button id="changeRoleButton" class="btn btn-warning">Cambiar Rol</button>
         <button id="logoutButton" class="btn btn-danger">Cerrar Sesión</button>
     </div>
 </div>
-
-
 
 <script>
 document.getElementById('logoutButton').addEventListener('click', function() {
     logout();
 });
+
+document.getElementById('changeRoleButton').addEventListener('click', function() {
+    const userId = "{{user._id}}"; // Obtener el ID del usuario de Handlebars
+
+    fetch(`/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) // No necesitamos enviar ningún cuerpo en este caso
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cambiar el rol del usuario');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Actualizar dinámicamente el contenido del rol
+        const userRoleElement = document.getElementById('userRole');
+        if (userRoleElement) {
+            userRoleElement.innerHTML = `<strong>Rol:</strong> ${data.user.role}`;
+        }
+        console.log('Rol del usuario cambiado correctamente:', data);
+    })
+    .catch(error => {
+        console.error('Error al cambiar el rol del usuario:', error);
+        // Manejar el error si es necesario
+    });
+});
+
 </script>
 
 <script src="../user.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-

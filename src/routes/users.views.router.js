@@ -9,6 +9,16 @@ const router = Router();
 // Middleware de logger
 router.use(addLogger);
 
+//Intercambia los roles de "usuario" a "premium" segun haga falta
+
+
+router.put('/:userId', (req, res) => {
+    req.logger.info('Intercambiando Roles del usuario con ID: ' + req.params.userId);
+    UsersController.changeUserRole(req, res)
+});
+
+
+
 // Renderiza la vista de inicio de sesión
 router.get("/login", (req, res) => {
     req.logger.info('Accediendo a la ruta /login');
