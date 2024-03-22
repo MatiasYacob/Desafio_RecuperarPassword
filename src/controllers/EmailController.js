@@ -24,9 +24,7 @@ export const sendTicketByEmail = async (userEmail, ticketDetails) => {
                 <p style="font-size: 18px; margin-bottom: 10px; font-family: 'Verdana', sans-serif; font-weight: bold;">Aquí está el detalle de tu ticket:</p>
                 <p style="font-size: 18px; margin-bottom: 5px;">Fecha de Compra: ${purchase_datetime}</p>
                 <p style="font-size: 18px; margin-bottom: 20px;">Monto Total: $${amount}</p>
-                <!-- Otras propiedades del ticket aquí -->
-
-                <!-- Puedes agregar más estilos y detalles según sea necesario -->
+               
             </div>
         `,
     };
@@ -41,7 +39,7 @@ export const sendTicketByEmail = async (userEmail, ticketDetails) => {
 };
 export const sendEmail = async (to, subject, html) => {
     const mailOptions = {
-        from: `PreEntrega3-MatiasYacob ${config.gmailAcount}`,
+        from: `Proyecto MatiasYacob ${config.gmailAcount}`,
         to,
         subject,
         html // Enviar contenido HTML en lugar de texto sin formato

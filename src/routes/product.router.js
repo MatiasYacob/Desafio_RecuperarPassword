@@ -11,13 +11,13 @@ router.use(addLogger);
 // Rutas
 
 // Ruta para eliminar un producto del carrito ("/cart/:productId")
-router.delete('/:productId', passportCall('jwt'), authorization(['ADMIN']), (req, res) => {
+router.delete('/:productId', passportCall('jwt'), authorization(['ADMIN','PREMIUM']), (req, res) => {
     req.logger.info(`Eliminando producto ID ${req.params.productId}`);
     productController.deleteProduct(req, res);
 });
 
 // Ruta para agregar un nuevo producto
-router.post('/', passportCall('jwt'), authorization(['ADMIN']), (req, res) => {
+router.post('/', passportCall('jwt'), authorization(['ADMIN','PREMIUM']), (req, res) => {
     req.logger.info('Agregando un nuevo producto');
     productController.addProduct(req, res);
 });

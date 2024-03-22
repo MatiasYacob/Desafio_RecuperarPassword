@@ -125,23 +125,33 @@ export async function deleteProduct(req, res) {
             return res.status(400).json({ status: 'error', error: 'ID de producto no válido' });
         }
 
-        const deletedProduct = await productRepository.delete(productId);
+        const product = await productRepository.findById(productId);
 
-        if (!deletedProduct) {
+        if (!product) {
             return res.status(404).json({ status: 'error', error: 'El producto no existe' });
         }
 
-        req.logger.info('Producto eliminado exitosamente.');
-        res.status(200).json({
-            status: 'success',
-            message: 'Producto eliminado exitosamente',
-            logMessage: 'Producto eliminado exitosamente. Mensaje adicional para el log de la consola.',
-        });
+        // Verificar si el usuario es administrador o propietario del producto
+        if (req.user.role === "admin" || product.owner === req.user.email) {
+            // Eliminar el producto
+            const deletedProduct = await productRepository.delete(productId);
+
+            req.logger.info('Producto eliminado exitosamente.');
+            return res.status(200).json({
+                status: 'success',
+                message: 'Producto eliminado exitosamente',
+                logMessage: 'Producto eliminado exitosamente. Mensaje adicional para el log de la consola.',
+            });
+        } else {
+            
+            return res.status(403).json({ status: 'error', error: 'No tienes Permiso para hacer eso' });
+        }
     } catch (error) {
         req.logger.error('Error al eliminar el producto:', error);
         res.status(500).json({ status: 'error', error: 'Error al eliminar el producto' });
     }
 }
+
 
 // Función para obtener un producto por _id
 export async function getProductById(req, res) {
@@ -164,7 +174,14 @@ export async function getProductById(req, res) {
 
 // Función para agregar un nuevo producto
 export async function addProduct(req, res) {
+    let newProduct; // Declarar la variable fuera del bloque try
+    let owner; // Declarar la variable owner aquí
+
     try {
+        if (req.user.role === "premium") {
+            owner = req.user.email; 
+        } 
+        
         const { title, description, price, thumbnails, code, stock, status } = req.body;
 
         // Validación de campos obligatorios
@@ -173,33 +190,36 @@ export async function addProduct(req, res) {
             return res.status(400).json({ status: 'error', message: 'Faltan campos obligatorios' });
         }
 
-        const newProduct = {
+        newProduct = {
             title,
             description,
             price: Number(price),
             thumbnails: Array.isArray(thumbnails) ? thumbnails : [thumbnails],
             code,
             stock: Number(stock),
-            status: status || true
+            status: status || true,
+            owner: owner 
         };
 
         const product = await productRepository.save(newProduct);
 
+        // Verificar si el producto se guardó correctamente
         if (product) {
             // Log informativo
             req.logger.info('Producto agregado exitosamente:');
-            res.status(201).json({ status: 'success', data: product });
+            return res.status(201).json({ status: 'success', data: product });
         } else {
             // Log de error
             req.logger.error('Error al agregar el producto');
-            res.status(500).json({ status: 'error', message: 'Error al agregar el producto' });
+            return res.status(500).json({ status: 'error', message: 'Error al agregar el producto' });
         }
     } catch (error) {
         // Log de error interno del servidor
         req.logger.error('Error interno del servidor al agregar el producto:', error);
-        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
+        return res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
     }
 }
+
 
 // Función para actualizar un producto por su ID
 export async function updateProductById(req, res) {

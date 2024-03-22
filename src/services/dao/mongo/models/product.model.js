@@ -10,7 +10,11 @@ const productSchema = new Schema({
     stock: Number,
     status: {
         type: Boolean,
-        default: true // Establecer el valor por defecto como true
+        default: true 
+    },
+    owner:{
+        type: String,
+        default: "admin",
     }
 });
 productSchema.plugin(mongoosePaginate);

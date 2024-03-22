@@ -112,15 +112,13 @@
         // Realizar acciones adicionales si es necesario, por ejemplo, actualizar la interfaz de usuario
 
     } catch (error) {
-        console.error('Error al agregar el producto al carrito:', error);
-
-        // Show error toast using SweetAlert
+        
         await Swal.fire({
-            title: 'Error al agregar el producto al carrito',
-            text: error.message || 'Ocurrió un error inesperado',
-            icon: 'error',
-            confirmButtonText: 'Aceptar',
-        });
+        title: 'Error al agregar el producto al carrito',
+        text: error.message || 'Ocurrió un error inesperado',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+    });
 
         // Manejar el error de alguna manera, por ejemplo, mostrar un mensaje de error al usuario
     }

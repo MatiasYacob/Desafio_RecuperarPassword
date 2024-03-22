@@ -29,9 +29,15 @@ export const AddProductToCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
         const productId = req.params.productId;
+        const productToAddCart = await productRepository.findById(productId);
+        if (productToAddCart.owner === req.user.email) {
+            return res.status(403).json({ error: 'No puedes agregar tus propios productos al carrito' });
+        }
+        
+        
+
 
         req.logger.info(`Añadiendo producto con ID ${productId} al carrito del usuario con ID ${userId}`);
-        const productToAddCart = await productRepository.findById(productId);
 
         if (!productToAddCart) {
             const errorInfo = generateProductErrorInfo(productId);

@@ -11,13 +11,13 @@ const router = Router();
 
 
 
-router.post('/tickets/create', passportCall('jwt'), authorization(['USUARIO']), TicketController.createTicket);
+router.post('/tickets/create', passportCall('jwt'), authorization(['USUARIO','PREMIUM']), TicketController.createTicket);
 
-router.post('/:productId', passportCall('jwt'), authorization(['USUARIO']), CartController.AddProductToCart);
+router.post('/:productId', passportCall('jwt'), authorization(['USUARIO','PREMIUM']), CartController.AddProductToCart);
 
-router.delete('/:productId', passportCall('jwt'), authorization(['USUARIO']), CartController.removeProductFromCart);
+router.delete('/:productId', passportCall('jwt'), authorization(['USUARIO','PREMIUM']), CartController.removeProductFromCart);
 
-router.delete('/', passportCall('jwt'), authorization(['USUARIO']), CartController.removeAllProductsFromCart);
+router.delete('/', passportCall('jwt'), authorization(['USUARIO','PREMIUM']), CartController.removeAllProductsFromCart);
 
 router.put('/:_id', CartController.updateProductQuantity);
 
